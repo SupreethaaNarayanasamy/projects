@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dice Roller</title>
+    <style>
+        .dice {
+            width: 150px; 
+            height: 100px;
+            transition: transform 0.2s ease-in-out; 
+            cursor: pointer;
+        }
+        .dice:hover {
+            transform: scale(1.2);
+        }
+        .result-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+        .result-item {
+            margin: 10px;
+            text-align: center;
+        }
+        .roll-message {
+            font-size: 14px;
+            color: black;
+        }
+        #roll-button {
+            font-size: 18px;
+            padding: 10px 20px;
+        }
+    </style>
+    <script>
+        function rollDice(event) {
+            event.preventDefault();
+            const diceNumber = document.getElementById('dice_number').value;
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '';
+            for (let i = 0; i < diceNumber; i++) {
+                const roll = Math.floor(Math.random() * 6) + 1;
+                const diceImage = document.createElement('img');
+                diceImage.src = `/static/dice${roll}.svg`;
+                diceImage.className = 'dice';
+                diceImage.onclick = () => rollSingleDice(diceImage);
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                resultItem.appendChild(diceImage);
+                const rollMessage = document.createElement('div');
+                rollMessage.className = 'roll-message';
+                rollMessage.innerText = 'Rolled!';
+                rollMessage.style.display = 'none';
+                resultItem.appendChild(rollMessage);
+                resultDiv.appendChild(resultItem);
+            }
+        }
+
+        function rollSingleDice(diceImage) {
+            const roll = Math.floor(Math.random() * 6) + 1;
+            diceImage.src = `/static/dice${roll}.svg`;
+            const rollMessage = diceImage.nextSibling;
+            rollMessage.style.display = 'block';
+            setTimeout(() => {
+                rollMessage.style.display = 'none';
+            }, 1000);
+        }
+
+        function showRandomDice() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '';
+            const diceNumber = document.getElementById('dice_number').value;
+            for (let i = 0; i < diceNumber; i++) {
+                const diceImage = document.createElement('img');
+                diceImage.src = `/static/random_dice.svg`;
+                diceImage.className = 'dice';
+                diceImage.onclick = () => rollSingleDice(diceImage);
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                resultItem.appendChild(diceImage);
+                const rollMessage = document.createElement('div');
+                rollMessage.className = 'roll-message';
+                rollMessage.innerText = 'Rolled!';
+                rollMessage.style.display = 'none';
+                resultItem.appendChild(rollMessage);
+                resultDiv.appendChild(resultItem);
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Roll the Dice</h1>
+    <form onsubmit="rollDice(event)">
+        <label for="dice_number">How many dice to roll?</label>
+        <input type="number" id="dice_number" name="dice_number" min="1" required oninput="showRandomDice()">
+    </form>
+    <div id="result" class="result-container"></div>
+</body>
+</html>
